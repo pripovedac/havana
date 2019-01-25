@@ -1,0 +1,131 @@
+Projekat: Havana
+Tim: 7a3
+Faza: I
+Naziv dokumenta: Izveštaj
+
+Tabela za igru dimenzije n = 6 izgleda ovako:
+         0 1 2 3 4 5
+A    	- - - - - -  6
+B	   - - - - - - -  7
+C     - - - - - - - -  8
+D	 - - - - - - - - -  9
+E	- - - - - - - - - -  10
+F  - - - - - - - - - - -
+G	- - - - - - - - - -
+H	 - - - - - - - - -
+I	  - - - - - - - -
+J	   - - - - - - -
+K		- - - - - -	
+
+Reprezentacija ove matrice u memoriji:
+((A ((0 -) (1 -) (2 -) (3 -) (4 -) (5 -)))
+(B ((0 -) (1 -) (2 -) (3 -) (4 -) (5 -) (6 -)))
+(C ((0 -) (1 -) (2 -) (3 -) (4 -) (5 -) (6 -) (7 -)))
+(D ((0 -) (1 -) (2 -) (3 -) (4 -) (5 -) (6 -) (7 -) (8 -)))
+(E ((0 -) (1 -) (2 -) (3 -) (4 -) (5 -) (6 -) (7 -) (8 -) (9 -)))
+(F ((0 -) (1 -) (2 -) (3 -) (4 -) (5 -) (6 -) (7 -) (8 -) (9 -) (10 -)))
+(G ((1 -) (2 -) (3 -) (4 -) (5 -) (6 -) (7 -) (8 -) (9 -)(10 -)))
+(H ((2 -) (3 -) (4 -) (5 -) (6 -) (7 -) (8 -) (9 -) (10 -)))
+(I ((3 -) (4 -) (5 -) (6 -) (7 -) (8 -) (9 -) (10 -)))
+(J ((4 -) (5 -) (6 -) (7 -) (8 -) (9 -) (10 -)))
+(K ((5 -) (6 -) (7 -) (8 -) (9 -) (10 -)))
+Matrica se pamti kao asocijativna lista gde je kljuc indeks vrste, a
+vrednost asocijativna lista u kojoj je indeks kolone kljuc, a vrednost
+sama vrednost polja.
+
+Napomena: vrednosti kolona u donjoj polovini matrice jednaki su broju
+praznih mesta ispred same vrste pri stampanju.
+npr. vrsta G ima jedan spejs pre pocetka stampanja i prva kolona
+koja se u njoj nalazi takodje ima vrednost 1. Ova pravilnost je
+koriscena u toku implementacije funkcija.
+
+Bitnije funkcije:
+
+printRow (rowIndex n visibleFieldsNumber):
+	Stampa ceo red: oznaku reda na pocetku, razmake i odgovarajuce karaktere.
+	--- Parametri:
+		rowIndex - indeks reda koji se stampa
+		n - dimenzija sestougla
+		visibleFieldsNumber - broj vidljivih polja
+
+printVisibleFields (rowIndex visibleFieldsNumber):		
+	Stampa vidljiva polja u matrici.
+	--- Parametri:
+		rowIndex - indeks vrste koja se stampa
+		visibleFieldsNumber - broj polja koja se vide u trenutnoj vrsti
+	--- Objasnjenje:
+		Stamanje matrice se vrsi u 2 koraka. U prvom koraku se stampa
+		prva polovina matrice gde svi elementi imaju 0 za indeks kolone i 
+		broj kolona je jednak broju vidljivih polja.
+		U drugom koraku se stampa donja polovina matrice, gde indeksi kolona
+		krecu od broja praznih polja. Odnosno, ukoliko u toj vrsti ima
+		1 prazno polje, to znaci da ce i prvi element kao indeks kolone imati 
+		broj 1.
+
+getValue (row column):
+	Vraca vrednost elementa u matrici predstavljenoj pomocu asocijativnih listi.
+	--- Parametri:
+		row - indeks vrste u matrici tipa karakter
+		column - indeks kolone u matrici celobrojnog tipa
+	-- Objasnjenje:
+		Matrica koja se koristi u samoj funkciji pod nazivom 'playground' sadrzi
+		trenutno stanje tabele.
+
+startGame ():
+	Inicijalizuje igru.
+	--- Objasnjenje:
+		Ucitava se dimenzija table. Definise prazna matrica i smesta
+		u promenljivu 'playgroud'. Testiranja radi omogucili smo da
+		igraci imaju prava na po 5 poteza.
+
+matrixFactory (rowIndex):
+	Kreira matricu.
+	--- Parametri:
+		rowIndex - indeks vrste koja se pravi krece se u rasponu {0, 1... 2n-1}
+	--- Objasnjenje: 
+		Nadovezuje se indeks vrste na povratnu vrednost fn 'rowInit', a zatim se
+		tako dobijena vrsta nadovezuje na ostale.
+
+rowInit (rowIndex columnIndex):		
+	Inicijalizuje vrste matrice;
+	--- Objasnjenje:
+		Pocetna vrednost parametra rowIndex je 0, a columnIndex-a je 2n-2, jer toliko
+		ima kolona, tj. vrste se ispisuju unazad.
+		Kraj rekurzije se javlja iz 2 razloga:
+		1. Stampa se gornja polovina matrice i columnIndex je manji od 0, tj. dosli smo do kraja.
+		2. Stampa se gornja polovina matrice i vrednost kolone je postala manja od broja
+		praznih polja.
+
+checkIfValid (rowIndex columnIndex):
+	--- Objasnjenje:
+		Stanje je validno ako za prosledjene indekse vrste i kolone postoji
+		vrednost u matrici '-'. To znaci da je taj element u odgovarajucem opsegu
+		i da ta pozicija nije zauzeta.
+
+setField (rowIndex columnIndex matrix):	
+	Postavlja vrednost polja u matrici na x, ili o.
+	--- Parametri:
+		rowIndex - indeks vrste
+		columnIndex - indeks kolone
+		matrix - matrica sa kojom se radi
+	--- Objasnjenje:
+		Trazi se vrsta koja pocinje odgovarajucim karakterom, zatim se ona modifikuje
+		funkcijom 'modifyRow'. Na tako modifikovanu vrstu sa sa obe strane nadovezuje
+		prethodno stanje matrice.
+
+modifyRow (columnIndex row):
+	Modifikuje red matrice upisujuci za vrednost polja x, odnosno o.
+	--- Parametri:
+		columnIndex - indeks kolone koja se modifikuje
+		row - vrsta matrice koja se modifikuje
+	--- Objasnjenje:
+		Analogno fn 'setField', u prosledjenoj vrsti se trazi par kljuc-vrednost
+		gde je kljuc vrednost odgovarajuce kolone. Setuje se zeljena vrednost i
+		na tako dobijeni par se sa obe strane nadovezuje prethodno stanje vrste.
+
+Napomena: Nisu sve funkcije detaljno objasnjene zbog njihovog niskog nivoa kompleksnosti.
+U dokumentu sa kodom su prilozene sve funkcije koje su implementirane, pri cemu su 
+kompleksnije funkcije opisane samo u 1 recenici. Detaljni opis je u ovom dokumentu.
+
+
+ 
